@@ -5,6 +5,19 @@ var wikiUrl   = 'http://wiki.4gamer.net/lova/使い魔/';
 
 var updateLogs = [
   {
+    date: "2016/06/30",
+    descs: [
+      "サービスが終了しました。",
+      "1年間お疲れ様でした。",
+      "またどこか別のゲームでお会いしましょう_(:3」∠)_",
+      "<br/>",
+      "・本サイトについて",
+      "ドメインの期限切れにより8月にはこのサイトが見れなくなってしまいます。",
+      "サービス終了後もLoVAの思い出としてとっておきたいので永久保存をgithubに用意しました。",
+      "<a href='https://lova-deck-simu.github.io/dsimu-lova/'>こちら</a>",
+    ],
+  }, 
+  {
     date: "2016/06/03",
     descs: [
       "<a href='http://lova.jp/member/article.php?no=820'>公式のアップデート</a>に伴い使い魔データの修正。",
