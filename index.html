@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja" ng-app="mainApp" ng-controller="mainCtrl">
+  <head>
+    <title>LoVA - デッキシミュレータ</title>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta name="description" content="このサイトはロード オブ ヴァーミリオンのデッキシミュレーションを行うサイトです。" />
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-animate.min.js"></script>
+    <script src="./js/angular-dragdrop.min.js"></script>
+    <script src="./js/main.js"></script>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-66297595-2', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body ng-class="{'overflow-hidden': showOverlay}">
+      <h1 id="header">
+        <a href="/" target="_self">LoVA - デッキシミュレータ</a>
+      </h1>
+      
+      <div id="main-content">
+        <div class="flexbox flex-center">
+          <div id="detail">
+            <div id="servant_name" class="bbtm-red mb10 fontb">
+              {{ selectedServant.name }} / {{ selectedServant.number }}
+              <a ng-href="{{ selectedServant.url }}" id="wiki_link" target="_blank">wikiで見る</a>
+            </div>
+            
+            <table id="servant_info" class="mb10">
+              <tr><th ng-repeat="ik in ::infoKeys">{{ locale.info[ ik ] }}</th></tr>
+              <tr><td ng-repeat="ik in ::infoKeys">{{ selectedServant[ ik ] }}</td></tr>
+            </table>
+            
+            <table id="servant_status" class="mb20">
+              <tr>
+                <th></th>
+                <th ng-repeat="sk in ::statusKeys">{{ locale.status[ sk] }}</th>
+              </tr>
+              <tr>
+                <td>Lv1</td>
+                <td ng-repeat="sk in ::statusKeys">{{ selectedServant.status.Lv1 [ sk ] }}</td>
+              </tr>
+              <tr>
+                <td>Lv20</td>
+                <td ng-repeat="sk in ::statusKeys">{{ selectedServant.status.Lv20[ sk ] }}</td>
+              </tr>
+            </table>
+            
+            <div id="servant_skill">
+              <div class="mtb20" ng-repeat="skill_type in ::['active', 'passive']">
+                <div class="skill_name bbtm-red fontb mb10">{{ locale.skill[ skill_type ] }}: {{ selectedServant.skill[ skill_type ].name }}</div>
+                <table class="mb10" ng-show=" selectedServant.skill[ skill_type ].name != '-' ">
+                  <tr>
+                    <th>指定</th>
+                    <td>{{ selectedServant.skill[ skill_type ].usage }}</td>
+                    <th>効果</th>
+                    <td>{{ selectedServant.skill[ skill_type ].effect }}</td>
+                  </tr>
+                  <tr ng-show="skill_type == 'active'">
+                    <th>AP</th>
+                    <td>{{ selectedServant.skill.active.ap }}</td>
+                    <th>CT</th>
+                    <td>{{ selectedServant.skill.active.ct }}</td>
+                  </tr>  
+                </table>
+                <pre class="skill_desc">{{ selectedServant.skill[ skill_type ].description }}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="mlr10 unselect">
+
+            <div class="flexbox flex-center mb20">
+              <div id="servantList" class="mr10" ng-show="displayType == 'card'">
+                <ul class="flexbox flex-wrap flex-center">
+                  <li ng-repeat="servant in servants
+                                  | customTextFilter:searchText
+                                  | orderByAllowBlank:sort1.key:sort1.reverse
+                                  | orderByAllowBlank:sort2.key:sort2.reverse
+                                  track by $index"
+                      ng-show="showFlag(servant)"
+                      >
+                      <div ng-show="servant._setDeck" class="is-set-to-deck">
+                        <div>デッキセット中</div>
+                      </div>
+                      <div ng-model="::servants"
+                           class="box animated bg-{{ servant.tribe_en }}"
+                           ng-class="{'bg-selected': servant.isSelected}"
+                           ng-dblclick="::showOralTradition( servant )"
+                           ng-click="::showDetail( servant )"
+                           data-drag="::true"
+                           data-jqyoui-options="::{revert: 'invalid', helper: 'clone', appendTo: 'body'}"
+                           jqyoui-draggable="::{index: {{servant.array_index}}, placeholder: 'keep' }">
+                        <img class="sv_img" ng-src="{{ thumbnailSrc(servant.number) }}">
+                        <div class="range_icon {{servant.range_type}}" ng-show="icon.range">{{ locale.range_icon[ servant.range_type ] }}</div>
+                        <div class="cost_icon tcenter" ng-show="icon.cost">Cost {{ servant.cost }}</div>
+                        <div class="type_icon tcenter" ng-show="icon.type">{{ servant.type }}</div>
+                      </div>
+                  </li>
+                </ul>
+              </div>
+
+
+              <div id="display-option">
+                <div id="search">
+                  <div class="mtb10 tcenter">
+                    <!-- <div class="bbtm-red mb5">キーワード検索</div> -->
+                    <input type="text"
+                           ng-model="searchText"
+                           ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"
+                           placeholder="キーワードで検索"
+                           class="text-search">
+                  </div>
+                  
+                  <div class="mb10 tcenter">
+                    <div class="bbtm-red mb5">種族</div>
+                    <div class="flexbox flex-wrap flex-center">
+                      <div ng-repeat="tribe in ::tribes"
+                           ng-click="checked.tribe = xor( checked.tribe,  tribe_bit[ tribe ])"
+                           class="btn btn-tribe bg-{{tribe_en[tribe]}} bdr-{{tribe_en[tribe]}} unselect"
+                           ng-class="{'btn-disable': and(checked.tribe, tribe_bit[ tribe ] ) == 0}"
+                      >{{ tribe }}</div>
+                      <div
+                        ng-init ="tribe_flag = true"
+                        ng-click="tribe_flag = !tribe_flag; checked.tribe = tribe_flag * tribe_all_bit;"
+                        ng-class="{'btn-disable': !tribe_flag}"
+                        class="btn btn-cost"
+                      >全て</div>
+                    </div>
+                  </div>
+                  
+                  <div class="mb10 tcenter">
+                    <div class="bbtm-red mb5">コスト</div>
+                    <div class="flexbox flex-wrap flex-center">
+                      <div ng-repeat="cost in ::costs"
+                           ng-click="checked.cost = xor( checked.cost,  cost_bit[ cost ])"
+                           class="btn btn-cost unselect"
+                           ng-class="{'btn-disable': and(checked.cost, cost_bit[ cost ] ) == 0}"
+                      >{{ cost }}</div>
+                      <div
+                        ng-init ="cost_flag = true"
+                        ng-click="cost_flag = !cost_flag; checked.cost = cost_flag * cost_all_bit;"
+                        ng-class="{'btn-disable': !cost_flag}"
+                        class="btn btn-cost"
+                      >全て</div>
+                    </div>
+                  </div>
+                  
+                  <div class="mb10 tcenter">
+                    <div class="bbtm-red mb5">射程</div>
+                    <div class="flexbox flex-wrap flex-center">
+                      <div ng-repeat="range in ranges"
+                           ng-click="checked.range = xor( checked.range,  range_bit[ range ])"
+                           class="btn btn-range unselect"
+                           ng-class="{'btn-disable': and(checked.range, range_bit[ range ] ) == 0}"
+                        >{{ locale.range[range] }}</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div id="sort" class="mb10 tcenter">
+                  <div class="bbtm-red">ソート</div>
+                  <div class="mtb10">
+                    <span>条件１: </span>
+                    <select ng-model="sort1"
+                            ng-options="sort as sort.label for sort in sorts"
+                            ng-init="sort1 = sorts[0]"></select>
+                  </div>
+                  <div class="mtb10">
+                    <span>条件２: </span>
+                    <select ng-model="sort2"
+                            ng-options="sort as sort.label for sort in sorts"
+                            ng-init="sort2 = sorts[0]"></select>
+                  </div>
+                </div>
+                
+                <div id="icon-option" class="mb10 tcenter">
+                  <div class="bbtm-red mb5">アイコン表示</div>
+                  <div class="flexbox flex-wrap flex-center">
+                    <div ng-repeat="key in ['type', 'range', 'cost']"
+                          ng-init ="key != 'type' ? icon[key] = true : icon[key] = false;"
+                          ng-click="icon[key] = !icon[key]"
+                          class="btn btn-icon unselect"
+                          ng-class="{'btn-disable': icon[key] == false}"
+                          >{{ locale.info[ key ] }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="deck" class="">
+              <div class="flexbox">
+                <ul ng-repeat="target in ['main', 'side']"
+                    class="flexbox mb20"
+                    ng-class="::{'mainDeck': target == 'main'}"
+                >
+                  <li ng-repeat="servant in deck[ target ]"
+                      class=""
+                      data-drop="true"
+                      ng-model="::deck[ target ]"
+                      jqyoui-droppable="::{index: {{$index}}, beforeDrop: 'checkBeforeSet( target, $index, deck )', onDrop: 'setToDeck( deck[ target ][ $index ] )'}"
+                      >
+                      <div ng-model="::deck[ target ]"
+                           class="box bg-{{ servant.tribe_en }}"
+                           ng-class="{'bg-selected': servant.isSelected}"
+                           ng-dblclick="::showOralTradition( servant )"
+                           ng-click="::showDetail( servant )"
+                           data-drag="::true"
+                           jqyoui-draggable="::{index: {{$index}}, placeholder: true, onStop: 'removeFromDeck(target, $index, servant)'}"
+                           data-jqyoui-options="::{revert: 'invalid', revertDuration: 0}"
+                           >
+                        <img class="sv_img" ng-src="{{ thumbnailSrc(servant.number) }}">
+                        <div class="range_icon {{servant.range_type}}" ng-show="icon.range">{{ locale.range_icon[ servant.range_type ] }}</div>
+                        <div class="cost_icon tcenter" ng-show="icon.cost && servant.cost">Cost {{ servant.cost }}</div>
+                        <div class="type_icon tcenter" ng-show="icon.type">{{ servant.type }}</div>
+                      </div>
+                      <div class="background-text">
+                        <span>{{ target == "main" ? 'DECK' : 'SIDE' }}</span>
+                      </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="flexbox">
+                <div style="flex: 1">
+                  <div id="deckInfo">
+                    <table>
+                      <tr>
+                        <th>デッキコスト</th>
+                        <td>{{ deck.cost() }}</td>
+                      </tr>
+                      <tr>
+                        <th>種族ボーナス</th>
+                        <td>
+                          <span ng-show="deck.tribeCount() > 0">
+                            {{ deck.tribeCount() + '種' }} [初期マナ{{ 30 + deck.manaBonus() }}(+{{ deck.manaBonus() }})]
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                
+                <div class="flexbox flex-column" style="flex: 1">
+                  <div id="deckUrl" class="flexbox mb10">
+                    <div>
+                      <div class="btn btn-cost" ng-click="deckUrl = getDeckUrl()">デッキのURLを生成</div>
+                    </div>
+                    <div style="flex: 1" class="tcenter">
+                      <input ng-model="deckUrl" readonly='true' ng-click="::selectOnClick($event)">
+                    </div>
+                  </div>
+                  
+                  <div id="resetDeck" class="flexbox">
+                    <div class="btn btn-cost" ng-click="resetDeck( deck )">デッキリセット</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          
+        </div>
+      </div>
+
+      <div class="overlay overlay-close-btn" ng-class="::{'overlay-activate': showOverlay}" ng-show="showOverlay" ng-click="closeOralTradition($event)">
+        <div id="dialog-content">
+          <div class="btn btn-close"><img src="./img/close_btn.png" class="overlay-close-btn"></div>
+          <div class="flexbox flex-center">
+            <div class="oral-tradition">
+              {{ selectedServant.oral_tradition }}
+            </div>
+            <div class="image">
+              <img ng-src="{{ imageSrc( selectedServant.number ) }}">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="footer">
+        <div class="mtb20" style="width: 960px; margin: 20px auto;">
+          <div id="update" class="mb20">
+            <div class="title mb5">更新履歴・お知らせ</div>
+            <div>
+              <ul>
+                <li ng-repeat="log in ::updateLogs" class="flexbox mb5">
+                  <div style="width: 100px;">{{ log.date }}</div>
+                  <ul><li ng-repeat="desc in ::log.descs"><span ng-bind-html="trustAsHtml(desc)"></span></li></ul>
+                </li> 
+              </ul>
+            </div>
+          </div>
+
+          <div id="howtouse" class="mb20">
+            <div class="title mb5">使い方</div>
+            <div>
+              <ul>
+                <li>- カードをクリック -> 使い魔データを表示</li>
+                <li>- カードをダブルクリック -> 口承を表示</li>
+                <li>- カードをDeck置き場にドラッグ -> カードをデッキにセットする</li>
+                <li>- カードをDeck置き場から外にドラッグ -> カードをデッキから外す</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="aboutedit" class="mb20">
+            <div class="title mb5">使い魔データの編集について</div>
+            <div>
+              GoogleDriveのSpreadSheetに使い魔のデータをアップし誰でも編集できるようにしました。<br>
+              <a href="https://goo.gl/2iVRET">使い魔のデータ</a><br>
+              誰でも編集が可能です。(Googleアカウント不要)<br>
+              使い魔リストに編集があった場合、翌日自動的に管理人へ通知が行きます。通知が届き次第管理人がデッキシミュレータへ反映します。<br>
+              その他詳しい説明は<a href="https://goo.gl/HzvufA">こちら</a>を御覧ください
+            </div>
+          </div>
+
+          <div id="aboutdata" class="mb20">
+            <div class="title mb5">使い魔データの利用について</div>
+            <div>
+              当サイトで使用している使い魔のデータは<a href="http://dsimu-lova.jp/servantDetailList.json">こちら</a>からダウンロードできます。データ型はjsonです。<br>
+              利用するにあたり当サイトへの連絡は不要です。ご自由にお使いください。
+            </div>
+          </div>
+        
+          <div id="about" class="mb20">
+            <div class="title mb5">このサイトについて</div>
+            <div>
+              このサイトはロード オブ ヴァーミリオンのデッキ構築のシミューレーションを行う非公式サイトです。<br>
+              機能、デザインの要望や不具合などがあればこちらまでお願いします。<br>
+              <a href="https://goo.gl/1ZBY7E">お問い合わせフォーム</a><br>
+              または、メールにてお願いします。<br>
+              連絡先： lova.deck.simu@gmail.com<br>
+            </div>
+          </div>
+          
+          <div id="todo" class="mb20">
+            <div class="title mb5">実装予定一覧</div>
+            以下のリストはそのうち実装を考えている機能です。
+            <div>
+              <ul>
+                <li>- スマホ対応</li>
+                <li>- デッキの使い魔のパッシブスキルの一覧表示</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div id="link" class="mb20">
+            <div class="title mb5">リンク</div>
+            <div>
+              <ul>
+                <li>公式: <a href="http://lova.jp/member/">http://lova.jp/member/</a></li>
+                <li>公式wiki: <a href="http://wiki.4gamer.net/lova/">http://wiki.4gamer.net/lova/</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  </body>
+</html>

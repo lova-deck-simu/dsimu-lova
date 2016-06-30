@@ -1,0 +1,543 @@
+/** * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/) * http://cssreset.com */html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,time, mark, audio, video {  margin: 0;  padding: 0; border: 0;  font-size: 100%;  font: inherit;  vertical-align: baseline;}/* HTML5 display-role reset for older browsers */article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {  display: block;}body {  line-height: 1;}ol, ul {  list-style: none;}blockquote, q { quotes: none;}blockquote:before, blockquote:after,q:before, q:after { content: '';  content: none;}table {  border-collapse: collapse;  border-spacing: 0;}
+
+body {
+  background-color: #fff3ff; /*TODO: */
+  font-size: 12px;
+}
+
+a {
+  color: #fff;
+}
+
+
+#header, #footer {
+  color: #fff;
+  background-color: #270A0A;
+  min-width: 1300px;
+  padding: 10px;
+}
+#header {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: solid 2px #F70600;
+}
+#header a { text-decoration: none; }
+#header {
+  text-shadow:
+    -1px -1px 5px rgba(255,0,0,0.7),
+     1px -1px 5px rgba(255,0,0,0.7),
+    -1px  1px 5px rgba(255,0,0,0.7),
+     1px  1px 5px rgba(255,0,0,0.7);
+}
+#footer {
+  font-size: 12px;
+  line-height: 20px;
+  border-top: solid 2px #F70600;
+}
+
+.title {
+  font-size: 16px;
+  padding-left: 10px;
+  border-left: solid 5px #F70600;
+}
+
+
+#main-content {
+  width: 1300px;
+  padding: 20px 10px;
+  margin: auto;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  z-index: -1;
+  background-color: rgba(0,0,0,0.8);
+  opacity: 0;
+}
+.overlay-activate {
+  z-index: 1000;
+  opacity: 1;
+}
+
+.btn-close {
+  position: absolute;
+  top: -24px;
+  right: -24px;
+}
+
+#dialog-content {
+  position: relative;
+  margin: 100px auto 0px;
+  width: 760px;
+  height: 480px;
+  color: #ddd;
+  font-size: 14px;
+  line-height: 20px;
+  border-radius: 5px;
+  background: -moz-linear-gradient(#444, #000 20%, #000 80%, #444);
+  background: -webkit-gradient(linear, left top, left bottom,
+              from(#444), color-stop(0.2, #000), color-stop(0.8, #000), to(#444));
+}
+#dialog-content .oral-tradition {
+  padding: 20px;
+  margin: 20px;
+  border-radius: 20px;
+  border: solid 1px #aaa;
+  background: #000;
+  width: 300px;
+}
+#dialog-content .image {
+  margin: 20px;
+  width: 300px;
+}
+#dialog-content .image img {
+  width: 300px;
+}
+
+#display-option {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  line-height: 22px;
+  width: 180px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#sort select {
+  width: 50%;
+  text-align: center;
+  color: #fff;
+  border: solid 1px #922320;
+  background-color: #c25350;
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  -o-appearance:none;
+  -ms-appearance:none;
+}
+#sort select option {
+  padding: 5px;
+  border-bottom: solid 1px #922320;
+}
+
+.text-search {
+  box-sizing: border-box;
+  width: 90%;
+  padding: 6px;
+  border: solid 2px #922320;
+}
+.btn {
+  cursor: pointer;
+}
+
+.btn-tribe, .btn-cost, .btn-range, .btn-icon, .btn-all {
+  padding: 0px 7px;
+  margin: 3px;
+  line-height: 22px;
+}
+/* macとwindowsのフォントの表示サイズの違いへの対応*/
+.btn-tribe {
+  color: #fff;
+  text-shadow:
+    -1px -1px 5px rgba(255,0,0,0.2),
+     1px -1px 5px rgba(255,0,0,0.2),
+    -1px  1px 5px rgba(255,0,0,0.2),
+     1px  1px 5px rgba(255,0,0,0.2);
+}
+.btn-cost, .btn-range, .btn-icon { 
+  background: #c25350;
+  color: #fff;
+  border: solid 2px #922320;
+}
+.btn-icon { 
+  font-size: 9px;
+}
+
+.bg-jinju    { background-color: #FF8C00 }
+.bg-shinzoku { background-color: #D4CDBF }
+.bg-kaishu   { background-color: #00BBDE }
+.bg-mashu    { background-color: #47149A }
+.bg-fushi    { background-color: #B502D4 }
+.bg-light-jinju    { background-color: #ffd9a4 }
+.bg-light-shinzoku { background-color: #fff8ef }
+.bg-light-kaishu   { background-color: #ceffff }
+.bg-light-mashu    { background-color: #d8d1ff }
+.bg-light-fushi    { background-color: #ffd0ff }
+.bg-selected { 
+  box-shadow        : 0px 0px 0px 2px #F70600 inset !important;
+  -moz-box-shadow   : 0px 0px 0px 2px #F70600 inset !important;　/* Firefox用 */  
+  -webkit-box-shadow: 0px 0px 0px 2px #F70600 inset !important;　/* Safari,Google Chrome用 */
+}
+.btn-disable  { background-color: rgba(255, 255, 255, 0.4); color: #000; }
+
+.bdr-jinju    { border: solid 2px #CF5C00; }
+.bdr-shinzoku { border: solid 2px #A49D8F; } 
+.bdr-kaishu   { border: solid 2px #009BAE; }
+.bdr-mashu    { border: solid 2px #17046A; }
+.bdr-fushi    { border: solid 2px #8502A4; }
+
+#servantListStatus {
+  height: 436px;
+  width: 648px;
+}
+#servantListStatus table {
+  text-align: center;
+  width: 648px;
+  line-height: 30px;
+}
+#servantListStatus table thead, #servantListStatus table tbody {
+  display: block;
+}
+#servantListStatus table th {
+  background-color: #720300;
+  color: #fff;
+}
+#servantListStatus table tbody {
+  overflow-y: scroll;
+  height: 400px;
+}
+#servantListStatus table tbody tr:hover {
+  background-color: #FFF282; /*TODO: */
+}
+#servantListStatus table, #servantListStatus table th, #servantListStatus table td {
+  border: solid 1px #ccc;
+}
+
+#servantList {
+  height: 524px;
+  width: 676px;
+  /*width: 636px;*/
+  overflow-y: scroll;
+  background: #eee;
+  padding: 5px;
+  border: solid 1px #720300;
+  background-color: #ffddff; /*TODO: */
+}
+
+#deck {
+  padding: 5px;
+  background-color: rgba(0,0,0,0.2);
+}
+#deck ul {
+  padding: 5px;
+}
+#deck ul.mainDeck {
+  background-color: rgba(0,0,0,0.4)
+}
+
+#servantList li, #deck li {
+  position: relative;
+  margin: 2px;
+  border: solid 1px #ccc;
+  border-radius:         3px;  /* CSS3草案 */
+  -webkit-border-radius: 3px;  /* Safari,Google Chrome用 */
+  -moz-border-radius:    3px;  /* Firefox用 */
+}
+
+#servantList div.is-set-to-deck {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(255,255,255,0.7);
+  z-index: 100;
+}
+#servantList div.is-set-to-deck div{
+  position: absolute;
+  top: 70px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  text-shadow:
+    -1px -1px 5px rgba(255,100,0,0.9),
+     1px -1px 5px rgba(255,100,0,0.9),
+    -1px  1px 5px rgba(255,100,0,0.9),
+     1px  1px 5px rgba(255,100,0,0.9);
+}
+
+#servantList li:hover, #deck li:hover {
+  box-shadow        : 0px 0px 0px 2px #F70600;
+  -moz-box-shadow   : 0px 0px 0px 2px #F70600;　/* Firefox用 */  
+  -webkit-box-shadow: 0px 0px 0px 2px #F70600;　/* Safari,Google Chrome用 */  
+}
+
+#servantList div.box, #deck div.box {
+  cursor: pointer;
+  border-radius:         3px;  /* CSS3草案 */
+  -webkit-border-radius: 3px;  /* Safari,Google Chrome用 */
+  -moz-border-radius:    3px;  /* Firefox用 */
+
+  box-shadow        : 0px 0px 5px #eee inset;
+  -moz-box-shadow   : 0px 0px 5px #eee inset;　/* Firefox用 */  
+  -webkit-box-shadow: 0px 0px 5px #eee inset;　/* Safari,Google Chrome用 */  
+}
+#servantList div.box {
+  padding: 6px;
+  width: 110px;
+  height: 154px;
+}
+#deck div.box {
+  padding: 6px;
+  width: 95px;
+  height: 133px;
+}
+
+
+img.sv_img {
+  width: 100%;
+  box-shadow        : 0px 0px 5px #000;
+  -moz-box-shadow   : 0px 0px 5px #000;　/* Firefox用 */  
+  -webkit-box-shadow: 0px 0px 5px #000;　/* Safari,Google Chrome用 */  
+  
+  border-radius:         3px;  /* CSS3草案 */
+  -webkit-border-radius: 3px;  /* Safari,Google Chrome用 */
+  -moz-border-radius:    3px;  /* Firefox用 */
+}
+
+.range_icon {
+  position: absolute;
+  top: 24px;
+  left: 5px;
+  text-align: center;
+  line-height: 24px;
+  width: 24px;
+  font-size: 12px;
+  opacity: 0.9;
+  
+  border-radius:         12px;  /* CSS3草案 */
+  -webkit-border-radius: 12px;  /* Safari,Google Chrome用 */
+  -moz-border-radius:    12px;  /* Firefox用 */
+}
+.range_icon.short {
+  color: #fff;
+  background-color: rgba(0,0,0,0.8);
+  box-shadow        : 0px 0px 4px 4px #fff;
+}
+.range_icon.long {
+  color: #000;
+  background-color: rgba(255,255,255,0.8);
+  box-shadow        : 0px 0px 4px 4px #000;
+}
+.cost_icon {
+  position: absolute;
+  bottom: 10px;
+  width: 90%;
+  color: #fff;
+  font-size: 18px;
+  font-style: italic;
+  text-shadow:
+    -1px -1px 5px rgba(255,100,0,0.7),
+     1px -1px 5px rgba(255,100,0,0.7),
+    -1px  1px 5px rgba(255,100,0,0.7),
+     1px  1px 5px rgba(255,100,0,0.7);
+}
+.type_icon {
+  position: absolute;
+  bottom: 50px;
+  font-size: 18px;
+  width: 90%;
+  color: #fff;
+  text-shadow:
+    -1px -1px 3px rgba(0,255,236,0.8),
+     1px -1px 3px rgba(0,255,236,0.8),
+    -1px  1px 3px rgba(0,255,236,0.8),
+     1px  1px 3px rgba(0,255,236,0.8);
+}
+
+
+#deckUrl input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 6px;
+}
+
+#deckInfo table {
+  width: 100%;
+  line-height: 36px;
+  text-align: center;
+  border-collapse: separate;
+  border-spacing: 0px 5px;
+}
+#deckInfo table, #deckInfo table th, #deckInfo table td {
+  color: #720300;
+}
+#deckInfo table th {
+  width: 120px;
+  background-color: #720300;
+  color: #fff;
+}
+#deckInfo table td {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#detail {
+  width: 340px;
+  padding: 10px 10px; 
+  color: #fff;
+  font-size: 12.5px;
+  word-break: break-all;
+  background-color: rgba(0,0,0,0.7);
+}
+
+#detail table {
+  width: 340px;
+  line-height: 22px;
+  text-align: center;
+  word-break: normal;
+}
+
+#detail table, #detail table th, #detail table td {
+  border: solid 1px #ccc;
+}
+#detail table th {
+  background-color: #720300;
+  color: #fff;
+}
+
+#servant_name {
+  font-size: 16px;
+  line-height: 30px;
+  position: relative;
+}
+
+#wiki_link {
+  font-size: 11px;
+  position: absolute;
+  right: 0px;
+}
+
+#servant_info th, #servant_info td {
+  width: 60px;
+  vertical-align: middle;
+}
+
+#servant_status th, #servant_status td {
+  width: 40px;
+}
+
+#servant_skill .skill_name {
+  font-size: 14px;
+  line-height: 30px;
+}
+#servant_skill th {
+  width: 40px;
+} 
+#servant_skill td {
+  width: 140px;
+}
+#servant_skill .skill_desc {
+  line-height: 22px;
+  white-space: -moz-pre-wrap;
+  /* Opera 4-6 */
+  white-space: -pre-wrap;
+  /* Opera 7 */
+  white-space: -o-pre-wrap;
+  /* CSS3 */
+  white-space: pre-wrap;
+  /* IE 5.5+ */
+  word-wrap: break-word;
+}
+
+
+.mb5  { margin-bottom: 5px; }
+.mb10 { margin-bottom: 10px; }
+.mb20 { margin-bottom: 20px; }
+.mb30 { margin-bottom: 30px; }
+.mtb10 { margin-top: 10px; margin-bottom: 10px; }
+.mtb20 { margin-top: 20px; margin-bottom: 20px; }
+.mtb30 { margin-top: 30px; margin-bottom: 30px; }
+.ml10  { margin-left: 10px; }
+.ml20  { margin-left: 20px; }
+.mr10  { margin-right: 10px; }
+.mr20  { margin-right: 20px; }
+.mlr5  { margin-left: 5px; margin-right: 5px; }
+.mlr10 { margin-left: 10px; margin-right: 10px; }
+.mlr20 { margin-left: 20px; margin-right: 20px; }
+
+.w100p { width: 100%; }
+
+.fontb { font-weight: bold; }
+.tcenter { text-align: center; }
+
+.flexbox {
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+.flex-wrap { flex-wrap: wrap; }
+.flex-center { justify-content: center; }
+.flex-column { flex-direction: column; }
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.bbtm-red {
+  border-bottom: solid 1px #F70600;
+}
+
+.background-text {
+  position: absolute;
+  top: 60px;
+  z-index: -1;
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #888;
+}
+
+.unselect {
+  user-select: none; /* CSS3 */
+  -moz-user-select: none; /* Firefox */
+  -webkit-user-select: none; /* Safari、Chromeなど */
+  -ms-user-select: none; /* IE10かららしい */
+}
+
+.animated.ng-enter,
+.animated.ng-move {
+  /*-webkit-transition: opacity 0.5s ease-in, width 0.5s ease-in;*/
+  /*transition: opacity 0.5s ease-in, width 0.5s ease-in;*/
+  -webkit-transition: opacity 0.75s ease-in, top 0.75s ease-in;
+  transition: opacity 0.75s ease-in, top 0.75s ease-in;
+}
+.animated.ng-leave{
+/*  -webkit-transition: opacity 0.25s ease-in, width 0.25s ease-in;
+  transition: opacity 0.25s ease-in, width 0.25s ease-in;*/
+  -webkit-transition: opacity 0.5s ease-in, top 0.5s ease-in;
+  transition: opacity 0.5s ease-in, top 0.5s ease-in;
+}
+.animated.ng-enter {
+  top: -100px;
+  opacity: 0;
+}
+.animated.ng-enter.ng-enter-active {
+  top: 0px;
+  opacity: 1;
+}
+.animated.ng-leave {
+  top: 0px;
+  opacity: 1;
+}
+.animated.ng-leave.ng-leave-active {
+  top: 100px;
+  opacity: 0;
+}
+.animated.ng-move {
+  opacity: .5;
+}
+.animated.ng-move.ng-move-active {
+  opacity: 1;
+}
+
+
